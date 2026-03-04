@@ -1,0 +1,215 @@
+<!-- News Hero Section -->
+<section class="relative w-full bg-white py-16 overflow-hidden">
+
+  <!-- Graduation cap icon — top left -->
+  <div class="absolute left-10 top-10 w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#4a7c2f]" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+    </svg>
+  </div>
+
+  <!-- Wave squiggle — right of heading -->
+  <div class="absolute right-16 top-1/2 -translate-y-1/2 opacity-40">
+    <svg width="56" height="28" viewBox="0 0 56 28" fill="none">
+      <path d="M0 14 Q7 0 14 14 Q21 28 28 14 Q35 0 42 14 Q49 28 56 14"
+        stroke="#9ca3af" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- Centered content -->
+  <div class="max-w-3xl mx-auto px-4 flex flex-col items-center text-center gap-5">
+
+    <!-- Badge -->
+    <span class="border border-gray-400 text-gray-600 text-xs font-medium px-5 py-1.5 rounded-full">
+      News &amp; Updates
+    </span>
+
+    <!-- Heading -->
+    <h1 class="text-4xl md:text-5xl font-medium text-gray-900 leading-tight">
+      Get the latest updates on what's happening at
+      <span class="relative inline-block text-[#4a7c2f] italic">
+        Lukenya
+        <svg class="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8"
+          preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 6 Q25 0 50 6 Q75 12 100 6" stroke="#4a7c2f" stroke-width="2.5" fill="none"/>
+        </svg>
+      </span>
+      College
+    </h1>
+
+    <!-- Subtext -->
+    <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-xl">
+      Get the latest news and updates on events that are ongoing or upcoming within Lukenya
+      college and be part of the story
+    </p>
+
+    <!-- Search bar -->
+    <div class="relative w-full max-w-lg mt-2">
+      <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z"/>
+        </svg>
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Search News"
+        class="w-full pl-11 pr-4 py-3 bg-gray-100 rounded-full text-sm text-gray-700
+               placeholder-gray-400 border border-transparent
+               focus:outline-none focus:ring-2 focus:ring-[#4a7c2f]/30 focus:border-[#4a7c2f]
+               transition-all duration-200"
+      />
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Latest News Section -->
+<section class="w-full bg-white py-12">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Section heading -->
+    <h2 class="text-2xl font-extrabold text-[#4a7c2f] mb-8">Latest News</h2>
+
+    <!-- Cards grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div *ngFor="let article of allNews"
+        class="flex flex-col rounded-2xl border border-gray-200 overflow-hidden
+               hover:shadow-lg transition-shadow duration-300">
+
+        <!-- Image with category badge -->
+        <div class="relative h-52 overflow-hidden">
+          <img
+            [src]="article.image"
+            [alt]="article.title"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            onerror="this.parentElement.classList.add('bg-gray-200'); this.style.display='none';"
+          />
+          <!-- Category badge — bottom left over image -->
+          <span class="absolute bottom-4 left-4 bg-[#4a7c2f] text-white text-xs font-semibold
+                       px-4 py-1.5 rounded-full shadow">
+            {{ article.category }}
+          </span>
+        </div>
+
+        <!-- Card content -->
+        <div class="flex flex-col gap-2 p-5 flex-1">
+
+          <!-- Author + date -->
+          <p class="text-gray-500 text-xs">
+            by {{ article.author }}, {{ article.date }}
+          </p>
+
+          <!-- Title -->
+          <h3 class="text-gray-900 font-bold text-base leading-snug">
+            {{ article.title }}
+          </h3>
+
+          <!-- Excerpt -->
+          <p class="text-gray-500 text-sm leading-relaxed flex-1">
+            {{ article.excerpt }}
+          </p>
+
+          <!-- Read More -->
+          <a [href]="article.url"
+            class="text-[#4a7c2f] text-sm font-semibold hover:underline mt-1">
+            Read More...
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- All News Section -->
+<section class="w-full bg-white py-12">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Section heading -->
+    <h2 class="text-2xl font-extrabold text-[#4a7c2f] mb-8">All News</h2>
+
+    <!-- Cards grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+      <div *ngFor="let article of allNews"
+        class="flex flex-col rounded-2xl border border-gray-200 overflow-hidden
+               hover:shadow-lg transition-shadow duration-300">
+
+        <!-- Image with category badge -->
+        <div class="relative h-52 overflow-hidden">
+          <img
+            [src]="article.image"
+            [alt]="article.title"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            onerror="this.parentElement.classList.add('bg-gray-200'); this.style.display='none';"
+          />
+          <span class="absolute bottom-4 left-4 bg-[#4a7c2f] text-white text-xs font-semibold
+                       px-4 py-1.5 rounded-full shadow">
+            {{ article.category }}
+          </span>
+        </div>
+
+        <!-- Card content -->
+        <div class="flex flex-col gap-2 p-5 flex-1">
+          <p class="text-gray-500 text-xs">by {{ article.author }}, {{ article.date }}</p>
+          <h3 class="text-gray-900 font-bold text-base leading-snug">{{ article.title }}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed flex-1">{{ article.excerpt }}</p>
+          <a [href]="article.url" class="text-[#4a7c2f] text-sm font-semibold hover:underline mt-1">
+            Read More...
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-center gap-2">
+
+      <!-- Previous -->
+      <button
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+        class="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-[#4a7c2f]
+               disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Previous
+      </button>
+
+      <!-- Page numbers -->
+      <button
+        *ngFor="let page of pages"
+        (click)="goToPage(page)"
+        class="w-9 h-9 rounded-full text-sm font-semibold transition-all duration-200"
+        [style.background]="currentPage === page ? '#4a7c2f' : 'transparent'"
+        [style.color]="currentPage === page ? 'white' : '#374151'"
+        [class.hover:bg-gray-100]="currentPage !== page"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Next -->
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-[#4a7c2f]
+               disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+    </div>
+
+  </div>
+</section>
