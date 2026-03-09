@@ -1,13 +1,14 @@
 {
   "name": "lukenya-college",
   "version": "0.0.0",
-  "scripts": {
+ "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:lukenya-college": "node dist/lukenya-college/server/server.mjs"
+    "serve:ssr:worthy_credit": "node dist/worthy_credit/server/server.mjs"
   },
   "private": true,
   "dependencies": {
