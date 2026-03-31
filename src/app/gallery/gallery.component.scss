@@ -1,0 +1,36 @@
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .font-display {
+        font-family: 'Merriweather', serif;
+    }
+
+    /* Lightbox */
+    #lightbox {
+        display: none;
+    }
+
+    #lightbox.active {
+        display: flex;
+    }
+
+    /* Smooth image hover */
+    .gallery-img {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .gallery-img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+        z-index: 10;
+        position: relative;
+    }
+
+    /* Filter button active */
+    .filter-btn.active {
+        background-color: #2e6b1f;
+        color: white;
+        border-color: #2e6b1f;
+    }

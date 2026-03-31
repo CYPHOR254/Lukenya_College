@@ -1,0 +1,58 @@
+<section class="dp-section">
+
+  <!-- Top-left mortarboard icon -->
+  <div class="deco deco--cap" aria-hidden="true">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#10b981"/>
+      <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#10b981" fill-opacity="0.85"/>
+    </svg>
+  </div>
+
+  <!-- Top-right wave decoration -->
+  <div class="deco deco--wave" aria-hidden="true">
+    <svg width="48" height="22" viewBox="0 0 48 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 6 C7 1,13 11,19 6 C25 1,31 11,37 6 C43 1,47 9,47 9"
+            stroke="#10b981" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+      <path d="M2 14 C7 9,13 19,19 14 C25 9,31 19,37 14 C43 9,47 17,47 17"
+            stroke="#10b981" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.3"/>
+    </svg>
+  </div>
+
+  <!-- Decorative circles -->
+  <span class="blob blob--green-dot   blob--tl" aria-hidden="true"></span>
+  <span class="blob blob--mint-circle  blob--tr" aria-hidden="true"></span>
+  <span class="blob blob--yellow-dot  blob--ml" aria-hidden="true"></span>
+  <span class="blob blob--mint-sm     blob--mr" aria-hidden="true"></span>
+  <span class="blob blob--teal-dot    blob--br" aria-hidden="true"></span>
+
+  <!-- FAQs pill -->
+  <div class="faqs-row">
+    <a href="#faqs" class="faqs-pill">FAQs</a>
+  </div>
+
+  <!-- Avatar + name + title -->
+  <div class="hero">
+    <div class="avatar-wrap">
+      <div class="amber-blob" aria-hidden="true"></div>
+      <div class="avatar-ring">
+        <img
+          [src]="hod.imageSrc"
+          [alt]="hod.imageAlt"
+          class="avatar-img"
+        />
+      </div>
+    </div>
+
+    <h2 class="dp-name">{{ hod.name }}</h2>
+
+    <p class="dp-title">
+      <span class="highlight">{{ hod.collegeHighlight }}</span>&nbsp;{{ hod.title }}
+    </p>
+  </div>
+
+  <!-- Body paragraphs -->
+  <div class="body-text">
+    <p *ngFor="let para of hod.paragraphs">{{ para }}</p>
+  </div>
+
+</section>

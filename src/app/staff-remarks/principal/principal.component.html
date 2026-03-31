@@ -1,0 +1,88 @@
+
+
+  <section class="principal-section">
+
+    <!-- Top-left mortarboard icon (exactly like design) -->
+    <div class="deco deco--cap">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#10b981"/>
+        <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#10b981" fill-opacity="0.85"/>
+      </svg>
+    </div>
+
+    <!-- Top-right wave/tilde decoration (double wave) -->
+    <div class="deco deco--wave">
+      <svg width="48" height="20" viewBox="0 0 48 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 6 C6 1,12 11,18 6 C24 1,30 11,36 6 C42 1,46 9,46 9" stroke="#10b981" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55"/>
+        <path d="M2 12 C6 7,12 17,18 12 C24 7,30 17,36 12 C42 7,46 15,46 15" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.35"/>
+      </svg>
+    </div>
+
+    <!-- Decorative circles (blobs) as per screenshot: green dot, mint circle, yellow circle, teal dot -->
+    <span class="blob blob--dot-green blob--pos-tl"></span>
+    <span class="blob blob--circle-mint blob--pos-tr"></span>
+    <span class="blob blob--circle-yellow blob--pos-mr"></span>
+    <span class="blob blob--dot-teal blob--pos-br"></span>
+
+    <!-- FAQs pill — centered between decorative icons and photo (exact match) -->
+    <div class="faqs-row">
+      <a href="#" class="faqs-pill" onclick="event.preventDefault(); alert('📘 Frequently Asked Questions — Explore admission, courses, campus life & more.');">FAQs</a>
+    </div>
+
+    <!-- Photo + Name + Title -->
+    <div class="hero">
+      <div class="avatar-wrap">
+        <!-- amber blob that peeks behind the photo at bottom right -->
+        <div class="amber-blob"></div>
+        <div class="avatar-ring">
+          <!-- 
+            Placeholder image: since original screenshot uses /principal.jpg, 
+            we embed a high-quality placeholder that matches a professional principal photo.
+            For demo, we use a premium Unsplash-style image (professional portrait) to reflect the vibe.
+            In production, replace src with actual principal image.
+          -->
+          <img 
+            src="/principal.jpg" 
+            alt="Mr Joel Mulelu - Lukenya College Principal"
+            class="avatar-img"
+            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?background=10b981&color=fff&bold=true&size=200&name=JM&length=2';"
+          />
+        </div>
+      </div>
+
+      <h2 class="principal-name">Mr Joel Mulelu</h2>
+
+      <p class="principal-title">
+        <span class="highlight">Lukenya</span>&nbsp;College Principal
+      </p>
+    </div>
+
+    <!-- Body text: full message exactly matching the content from screenshot (6 paragraphs) -->
+    <div class="body-text">
+      <p>Welcome to Lukenya College — a duly accredited tertiary institution registered by the Ministry of Education and regulated by the Technical and Vocational Education and Training Authority (TVETA) and NITA.</p>
+      <p>Strategically located in Emali Town, approximately 125 kilometers from Nairobi and 500 meters off Mombasa Road, the College provides a conducive learning environment designed to nurture skill development, innovation, and professional growth.</p>
+      <p>Since its inception, Lukenya College has experienced remarkable growth in student enrollment, academic programmes, staff development, and infrastructure expansion. This growth reflects our commitment to delivering quality technical and professional training that meets national and global standards.</p>
+      <p>Our programmes are designed to equip learners with practical competencies, entrepreneurial skills, and industry-relevant knowledge that enhance employability and promote economic empowerment. We believe education should not only transform individuals, but also create sustainable impact within communities.</p>
+      <p>At Lukenya College, we cultivate a culture of discipline, hard work, integrity, and excellence. We encourage our students to take full advantage of the opportunities available, develop their talents, and confidently step into a world of limitless possibilities.</p>
+      <p>I warmly invite you to join our vibrant academic community and become part of an institution dedicated to shaping skilled professionals and responsible leaders for tomorrow.</p>
+    </div>
+
+    <!-- Optional subtle extra detail: a small bottom decorative element (to match modern design) not mandatory but adds charm -->
+  </section>
+
+  <!-- Ensure that any missing image fallback is graceful and content remains faithful -->
+  <script>
+    // Just a small interactive fallback for any broken images (if needed)
+    (function() {
+      const img = document.querySelector('.avatar-img');
+      if (img) {
+        img.addEventListener('error', function() {
+          if (!this.dataset.fallbackSet) {
+            this.dataset.fallbackSet = 'true';
+            this.src = 'https://ui-avatars.com/api/?background=0f172a&color=10b981&bold=true&size=200&name=JM&length=2&fontsize=0.70';
+            this.alt = 'Mr Joel Mulelu, Principal Lukenya College';
+          }
+        });
+      }
+    })();
+  </script> 

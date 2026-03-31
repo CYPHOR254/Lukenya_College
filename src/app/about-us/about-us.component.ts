@@ -205,11 +205,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule,FormsModule, ReactiveFormsModule],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss'
 })
@@ -218,6 +219,24 @@ export class AboutUsComponent implements OnDestroy {
   contactForm: FormGroup;
   isSubmitting = false;
   submitted = false;
+
+
+    form = {
+    fullName: '',
+    email: '',
+    phone: '',
+    program: '',
+    message: '',
+  };
+
+  programs = [
+    'Department of Education',
+    'Business Department',
+    'Technical Department',
+    'Diploma in ICT',
+    'Certificate in Accounting',
+    'Other',
+  ];
 
   // ── Single merged constructor ────────────────────────────────────────────
   constructor(
