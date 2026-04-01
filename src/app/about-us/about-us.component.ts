@@ -207,6 +207,13 @@ import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
+interface Slide {
+  image: string;
+  title: string;
+  subtitle: string;
+  alt: string;
+}
+
 @Component({
   selector: 'app-about-us',
   standalone: true,
@@ -219,6 +226,7 @@ export class AboutUsComponent implements OnDestroy {
   contactForm: FormGroup;
   isSubmitting = false;
   submitted = false;
+  readonly SLIDE_DURATION = 5000;
 
 
     form = {
@@ -237,6 +245,39 @@ export class AboutUsComponent implements OnDestroy {
     'Certificate in Accounting',
     'Other',
   ];
+
+
+    // ── Facilities Slideshow ───────────────────────────────────
+  readonly slides: Slide[] = [
+    {
+      image:    '\Facilities Image.jpg',
+      title:    'Auditorium',
+      subtitle: 'Modern venue for events, seminars, and performances',
+      alt:      'Auditorium',
+    },
+    {
+      image:    '\library.jpg',
+      title:    'Library & Research Center',
+      subtitle: 'Thousands of resources at your fingertips',
+      alt:      'Library',
+    },
+    {
+      image:    '\chefs.jpg',
+      title:    'Science Laboratories',
+      subtitle: 'Cutting-edge equipment for hands-on experiments',
+      alt:      'Laboratory',
+    },
+    {
+      image:    '\sports.png',
+      title:    'Sports & Fitness Complex',
+      subtitle: 'Olympic-standard facilities for training and recreation',
+      alt:      'Sports Complex',
+    },
+  ];
+
+    currentSlide = 0;
+
+  private slideTimer: ReturnType<typeof setInterval> | null = null;
 
   // ── Single merged constructor ────────────────────────────────────────────
   constructor(
@@ -372,4 +413,37 @@ export class AboutUsComponent implements OnDestroy {
       setTimeout(() => (this.submitted = false), 5000);
     }, 1500);
   }
+
+
+  // ── Slideshow helpers ──────────────────────────────────────
+  prevSlide(): void {
+    this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    this.resetSlideTimer();
+  }
+
+  nextSlide(): void {
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    this.resetSlideTimer();
+  }
+
+  goToSlide(index: number): void {
+    this.currentSlide = index;
+    this.resetSlideTimer();
+  }
+
+  /** Returns a zero-padded label, e.g. 1 → "01" */
+  padSlideIndex(i: number): string {
+    return String(i + 1).padStart(2, '0');
+  }
+
+  private startSlideTimer(): void {
+    this.slideTimer = setInterval(() => this.nextSlide(), this.SLIDE_DURATION);
+  }
+
+  private resetSlideTimer(): void {
+    if (this.slideTimer) clearInterval(this.slideTimer);
+    this.startSlideTimer();
+  }
 }
+
+

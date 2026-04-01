@@ -61,25 +61,25 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // ── Facilities Slideshow ───────────────────────────────────
   readonly slides: Slide[] = [
     {
-      image:    'assets/facilities/auditorium.jpg',
-      title:    'Auditorium',
-      subtitle: 'Modern venue for events, seminars, and performances',
+      image:    '\Facilities Image.jpg',
+      title:    'Workshop Area',
+      subtitle: 'Modern Workshop Area for all technical students to get practical skills',
       alt:      'Auditorium',
     },
     {
-      image:    'assets/facilities/library.jpg',
+      image:    '\library.jpg',
       title:    'Library & Research Center',
       subtitle: 'Thousands of resources at your fingertips',
       alt:      'Library',
     },
     {
-      image:    'assets/facilities/lab.jpg',
+      image:    '\chefs.jpg',
       title:    'Science Laboratories',
       subtitle: 'Cutting-edge equipment for hands-on experiments',
       alt:      'Laboratory',
     },
     {
-      image:    'assets/facilities/sports.jpg',
+      image:    '\sports.png',
       title:    'Sports & Fitness Complex',
       subtitle: 'Olympic-standard facilities for training and recreation',
       alt:      'Sports Complex',
