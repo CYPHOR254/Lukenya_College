@@ -3,25 +3,28 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component'; // ← add this
 
 @Component({
   selector: 'app-school-of-education',
   standalone: true,
-  imports: [CommonModule,FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent, ReactiveFormsModule],
   templateUrl: './school-of-education.component.html',
   styleUrl: './school-of-education.component.scss'
 })
 export class SchoolOfEducationComponent {
 
-    contactForm: FormGroup;
-    isSubmitting = false;
-    submitted = false;
+  contactForm: FormGroup;
+  isSubmitting = false;
+  submitted = false;
   currentIndex = 2;
+  isModalOpen = false;
+
 
   private timer: ReturnType<typeof setInterval> | null = null;
   amenities: any;
 
-    programs = [
+  programs = [
     'Department of Education',
     'Business Department',
     'Technical Department',
@@ -29,7 +32,7 @@ export class SchoolOfEducationComponent {
     'Certificate in Accounting',
     'Other',
   ];
-      form = {
+  form = {
     fullName: '',
     email: '',
     phone: '',
@@ -42,7 +45,7 @@ export class SchoolOfEducationComponent {
   }
 
 
-    // ── Single merged constructor ────────────────────────────────────────────
+  // ── Single merged constructor ────────────────────────────────────────────
   constructor(
     private fb: FormBuilder,
     @Inject(PLATFORM_ID) private platformId: object
@@ -60,7 +63,7 @@ export class SchoolOfEducationComponent {
     }
   }
 
-   next() {
+  next() {
     this.currentIndex = (this.currentIndex + 1) % this.amenities.length;
     this.resetTimer();
   }

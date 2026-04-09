@@ -206,6 +206,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component'; // ← add this
 
 interface Slide {
   image: string;
@@ -217,11 +218,13 @@ interface Slide {
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [CommonModule,FormsModule, ReactiveFormsModule],
+  imports: [CommonModule,FormsModule,ModalComponent, ReactiveFormsModule],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss'
 })
 export class AboutUsComponent implements OnDestroy {
+  isMenuOpen = false;
+  isModalOpen = false; // ← add this line
 
   contactForm: FormGroup;
   isSubmitting = false;

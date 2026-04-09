@@ -1,46 +1,21 @@
-// import { Component } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { RouterModule } from '@angular/router';
-
-// @Component({
-//   selector: 'app-header',
-//   standalone: true,
-//   imports: [CommonModule, RouterModule],
-//   templateUrl: './header.component.html',
-//   styleUrls: ['./header.component.scss']
-// })
-// export class HeaderComponent {
-//   isMenuOpen = false;
-
-//   navLinks = [
-//     { label: 'Home', path: '/', active: true },
-//     { label: 'About Us', path: '/about', active: false },
-//     { label: 'Academics', path: '/academics', active: false },
-//     { label: 'Student Portal', path: '/student-portal', active: false },
-//   ];
-
-//   toggleMenu() {
-//     this.isMenuOpen = !this.isMenuOpen;
-//   }
-// }
-
-
-
 
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ModalComponent } from '../modal/modal.component'; // ← add this
+
 
 interface NavLink {
   label: string;
   path?: string;
+  external?: boolean;  // 👈 add this
   dropdown?: { label: string; path: string }[];
 }
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ModalComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -48,20 +23,35 @@ export class HeaderComponent {
   isMenuOpen = false;
   dropdownOpen = false;
   mobileAcademicsOpen = false;
+  isModalOpen = false; // ← add this
 
   navLinks: NavLink[] = [
-    { label: 'Home', path: '/' },
-    { label: 'About Us', path: '/about' },
-    {
-      label: 'Academics',
-      dropdown: [
-        { label: 'School of Education', path: 'school-of-education' },
-        { label: 'School of Engineering', path: '/school-of-engineering' },
-        { label: 'School of Business', path: '/school-of-business' },
-      ],
-    },
-    { label: 'Student Portal', path: '/student-portal' },
-  ];
+  { label: 'Home', path: '/' },
+  { label: 'About Us', path: '/about' },
+  {
+    label: 'Academics',
+    dropdown: [
+      { label: 'School of Education', path: 'school-of-education' },
+      { label: 'School of Engineering', path: '/school-of-engineering' },
+      { label: 'School of Business', path: '/school-of-business' },
+    ],
+  },
+  { label: 'Student Portal', path: 'https://lc.mzizi.co.ke/ISIMSLogin.aspx', external: true }, // 👈
+];
+
+  // navLinks: NavLink[] = [
+  //   { label: 'Home', path: '/' },
+  //   { label: 'About Us', path: '/about' },
+  //   {
+  //     label: 'Academics',
+  //     dropdown: [
+  //       { label: 'School of Education', path: '/school-of-education' },
+  //       { label: 'School of Engineering', path: '/school-of-engineering' },
+  //       { label: 'School of Business', path: '/school-of-business' },
+  //     ],
+  //   },
+  //   { label: 'Student Portal', path: 'https://lc.mzizi.co.ke/ISIMSLogin.aspx' },
+  // ];
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;

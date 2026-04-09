@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component'; // ← add this
 
 @Component({
   selector: 'app-school-of-engineering',
   standalone: true,
-  imports: [CommonModule , FormsModule],
+  imports: [CommonModule , FormsModule, ModalComponent],
   templateUrl: './school-of-engineering.component.html',
   styleUrl: './school-of-engineering.component.scss'
 })
 export class SchoolOfEngineeringComponent {
+  isModalOpen = false;
 
     form = {
     fullName: '',

@@ -2,6 +2,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component'; // ← add this
 
 interface Slide {
   image: string;
@@ -13,22 +14,23 @@ interface Slide {
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule , FormsModule],
+  imports: [CommonModule, FormsModule , ModalComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
+  isMenuOpen = false;
 
   // ── Countdown ──────────────────────────────────────────────
   targetDate = new Date('2025-11-28T08:00:00');
-
-  days    = '00';
-  hours   = '00';
+  isModalOpen = false;
+  days = '00';
+  hours = '00';
   minutes = '00';
   seconds = '00';
 
   eventDateDisplay = 'November 28th, 2025';
-  eventDayTime     = 'Monday, 08:00 AM - 06:00 PM';
+  eventDayTime = 'Monday, 08:00 AM - 06:00 PM';
 
   private countdownTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -61,32 +63,32 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   // ── Facilities Slideshow ───────────────────────────────────
   readonly slides: Slide[] = [
     {
-      image:    '\Facilities Image.jpg',
-      title:    'Workshop Area',
+      image: '\Facilities Image.jpg',
+      title: 'Workshop Area',
       subtitle: 'Modern Workshop Area for all technical students to get practical skills',
-      alt:      'Auditorium',
+      alt: 'Auditorium',
     },
     {
-      image:    '\library.jpg',
-      title:    'Library & Research Center',
+      image: '\library.jpg',
+      title: 'Library & Research Center',
       subtitle: 'Thousands of resources at your fingertips',
-      alt:      'Library',
+      alt: 'Library',
     },
     {
-      image:    '\chefs.jpg',
-      title:    'Science Laboratories',
+      image: '\chefs.jpg',
+      title: 'Science Laboratories',
       subtitle: 'Cutting-edge equipment for hands-on experiments',
-      alt:      'Laboratory',
+      alt: 'Laboratory',
     },
     {
-      image:    '\sports.png',
-      title:    'Sports & Fitness Complex',
+      image: '\sports.png',
+      title: 'Sports & Fitness Complex',
       subtitle: 'Olympic-standard facilities for training and recreation',
-      alt:      'Sports Complex',
+      alt: 'Sports Complex',
     },
   ];
-  
-   openIndex: number | null = null; // all closed by default
+
+  openIndex: number | null = null; // all closed by default
 
   faqs = [
     {
@@ -116,7 +118,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   private slideTimer: ReturnType<typeof setInterval> | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
 
   // ── Lifecycle ──────────────────────────────────────────────
   ngOnInit(): void {
@@ -132,7 +134,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.countdownTimer) clearInterval(this.countdownTimer);
-    if (this.slideTimer)     clearInterval(this.slideTimer);
+    if (this.slideTimer) clearInterval(this.slideTimer);
   }
 
   // ── Countdown helpers ──────────────────────────────────────
@@ -150,8 +152,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.days    = this.pad(Math.floor(distance / (1000 * 60 * 60 * 24)));
-    this.hours   = this.pad(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    this.days = this.pad(Math.floor(distance / (1000 * 60 * 60 * 24)));
+    this.hours = this.pad(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     this.minutes = this.pad(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
     this.seconds = this.pad(Math.floor((distance % (1000 * 60)) / 1000));
   }
