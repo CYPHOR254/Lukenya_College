@@ -1,28 +1,36 @@
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { ModalComponent } from '../modal/modal.component'; // ← add this
+// import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../services/api.service'; // adjust path
 
 @Component({
   selector: 'app-school-of-education',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalComponent, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './school-of-education.component.html',
   styleUrl: './school-of-education.component.scss'
 })
-export class SchoolOfEducationComponent {
+export class SchoolOfEducationComponent implements OnDestroy {
 
-  contactForm: FormGroup;
-  isSubmitting = false;
-  submitted = false;
-  currentIndex = 2;
+  // ── Modal & Slideshow ─────────────────────────────────────────────────────
   isModalOpen = false;
-
+  currentIndex = 2;
+  amenities: any[] = [];
 
   private timer: ReturnType<typeof setInterval> | null = null;
-  amenities: any;
+
+  // ── Application Form ──────────────────────────────────────────────────────
+  form = {
+    fullName: '',
+    email: '',
+    phone: '',
+    program: '',
+    mode: '',
+    message: '',
+  };
 
   programs = [
     'Department of Education',
@@ -32,38 +40,31 @@ export class SchoolOfEducationComponent {
     'Certificate in Accounting',
     'Other',
   ];
-  form = {
-    fullName: '',
-    email: '',
-    phone: '',
-    program: '',
-    message: '',
-  };
 
-  ngOnDestroy() {
-    if (this.timer) clearInterval(this.timer);
-  }
+  submitted = false;
+  loading = false;
+  errorMessage = '';
 
+  private apiUrl = 'http://localhost:5000/send-application';
 
-  // ── Single merged constructor ────────────────────────────────────────────
+  // ── Constructor ───────────────────────────────────────────────────────────
   constructor(
-    private fb: FormBuilder,
+    private api: ApiService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
-    this.contactForm = this.fb.group({
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      program: [''],
-      message: [''],
-    });
-
     if (isPlatformBrowser(this.platformId)) {
       this.timer = setInterval(() => this.next(), 5000);
     }
   }
 
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  ngOnDestroy() {
+    if (this.timer) clearInterval(this.timer);
+  }
+
+  // ── Slideshow helpers ─────────────────────────────────────────────────────
   next() {
+    if (!this.amenities.length) return;
     this.currentIndex = (this.currentIndex + 1) % this.amenities.length;
     this.resetTimer();
   }
@@ -79,24 +80,28 @@ export class SchoolOfEducationComponent {
     this.timer = setInterval(() => this.next(), 5000);
   }
 
-
-
-  // ── Form ─────────────────────────────────────────────────────────────────
-  get f() {
-    return this.contactForm.controls;
-  }
-
+  // ── Form submission ───────────────────────────────────────────────────────
   onSubmit(): void {
-    if (this.contactForm.invalid) return;
+    const { fullName, email, phone, program, mode, message } = this.form;
 
-    this.isSubmitting = true;
+    if (!fullName || !email || !phone || !program || !mode || !message) {
+      this.errorMessage = 'Please fill in all fields before submitting.';
+      return;
+    }
 
-    setTimeout(() => {
-      this.isSubmitting = false;
-      this.submitted = true;
-      this.contactForm.reset();
-      setTimeout(() => (this.submitted = false), 5000);
-    }, 1500);
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.api.post('send-application', this.form).subscribe({
+      next: () => {
+        this.loading = false;
+        this.submitted = true;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = err.error?.message || 'Something went wrong. Please try again.';
+        console.error('Submission error:', err);
+      }
+    });
   }
 }
-

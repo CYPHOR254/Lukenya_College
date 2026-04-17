@@ -1,8 +1,11 @@
 
+
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ModalComponent } from '../modal/modal.component'; // ← add this
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../services/api.service';
 
 interface Slide {
   image: string;
@@ -14,7 +17,7 @@ interface Slide {
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, FormsModule , ModalComponent],
+  imports: [CommonModule, FormsModule, ModalComponent , ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
@@ -34,11 +37,13 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   private countdownTimer: ReturnType<typeof setInterval> | null = null;
 
+  // ── Form ───────────────────────────────────────────────────
   form = {
     fullName: '',
     email: '',
     phone: '',
     program: '',
+    mode: '',       // ← added to match backend
     message: '',
   };
 
@@ -52,43 +57,63 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   ];
 
   submitted = false;
+  loading = false;
+  errorMessage = '';
+
+  private apiUrl = 'http://localhost:5000/send-application';
 
   onSubmit() {
-    this.submitted = true;
-    // TODO: wire to backend / email service
-    console.log('Form submitted:', this.form);
-  }
+    const { fullName, email, phone, program, mode, message } = this.form;
+    if (!fullName || !email || !phone || !program || !mode || !message) {
+      this.errorMessage = 'Please fill in all fields before submitting.';
+      return;
+    }
 
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.api.post('send-application', this.form).subscribe({
+      next: () => {
+        this.loading = false;
+        this.submitted = true;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.errorMessage = err.error?.message || 'Something went wrong. Please try again.';
+        console.error('Submission error:', err);
+      }
+    });
+  }
 
   // ── Facilities Slideshow ───────────────────────────────────
   readonly slides: Slide[] = [
     {
-      image: '\Facilities Image.jpg',
+      image: '\\Facilities Image.jpg',
       title: 'Workshop Area',
       subtitle: 'Modern Workshop Area for all technical students to get practical skills',
       alt: 'Auditorium',
     },
     {
-      image: '\library.jpg',
+      image: '\\library.jpg',
       title: 'Library & Research Center',
       subtitle: 'Thousands of resources at your fingertips',
       alt: 'Library',
     },
     {
-      image: '\chefs.jpg',
+      image: '\\chefs.jpg',
       title: 'Science Laboratories',
       subtitle: 'Cutting-edge equipment for hands-on experiments',
       alt: 'Laboratory',
     },
     {
-      image: '\sports.png',
+      image: '\\sports.png',
       title: 'Sports & Fitness Complex',
       subtitle: 'Olympic-standard facilities for training and recreation',
       alt: 'Sports Complex',
     },
   ];
 
-  openIndex: number | null = null; // all closed by default
+  openIndex: number | null = null;
 
   faqs = [
     {
@@ -118,16 +143,16 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   private slideTimer: ReturnType<typeof setInterval> | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
+    private api: ApiService   // ← injected
+  ) { }
 
   // ── Lifecycle ──────────────────────────────────────────────
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Countdown
       this.updateCountdown();
       this.countdownTimer = setInterval(() => this.updateCountdown(), 1000);
-
-      // Slideshow auto-advance
       this.startSlideTimer();
     }
   }
@@ -152,8 +177,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.days = this.pad(Math.floor(distance / (1000 * 60 * 60 * 24)));
-    this.hours = this.pad(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    this.days    = this.pad(Math.floor(distance / (1000 * 60 * 60 * 24)));
+    this.hours   = this.pad(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     this.minutes = this.pad(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
     this.seconds = this.pad(Math.floor((distance % (1000 * 60)) / 1000));
   }
@@ -174,7 +199,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     this.resetSlideTimer();
   }
 
-  /** Returns a zero-padded label, e.g. 1 → "01" */
   padSlideIndex(i: number): string {
     return String(i + 1).padStart(2, '0');
   }
