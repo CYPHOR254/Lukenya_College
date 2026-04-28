@@ -129,10 +129,10 @@ export class AboutUsComponent implements OnDestroy {
       alt: 'Beauty Therapy Lab',
     },
     {
-      image: 'pneumatics_latest.jpg',
+      image: 'tank.jpg',
       title: 'Pneumatics & Fluid Power Lab',
       subtitle: 'Industrial equipment training for engineering students',
-      alt: 'Pneumatics Lab',
+      alt: 'tank Lab',
     },
   ];
 
