@@ -3,7 +3,7 @@ import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
-import {  HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 interface Slide {
@@ -49,12 +49,42 @@ export class AboutUsComponent implements OnDestroy {
   ];
 
   // Facilities Slideshow
+  // readonly slides: Slide[] = [
+  //   {
+  //     image: 'Facilities Image.jpg',
+  //     title: 'Auditorium',
+  //     subtitle: 'Modern venue for events, seminars, and performances',
+  //     alt: 'Auditorium',
+  //   },
+  //   {
+  //     image: 'library.jpg',
+  //     title: 'Library & Research Center',
+  //     subtitle: 'Thousands of resources at your fingertips',
+  //     alt: 'Library',
+  //   },
+  //   {
+  //     image: 'chefs.jpg',
+  //     title: 'Science Laboratories',
+  //     subtitle: 'Cutting-edge equipment for hands-on experiments',
+  //     alt: 'Laboratory',
+  //   },
+  //   {
+  //     image: 'sports.png',
+  //     title: 'Sports & Fitness Complex',
+  //     subtitle: 'Olympic-standard facilities for training and recreation',
+  //     alt: 'Sports Complex',
+  //   },
+  // ];
+
+
+  currentYear = new Date().getFullYear();
+
   readonly slides: Slide[] = [
     {
-      image: 'Facilities Image.jpg',
-      title: 'Auditorium',
-      subtitle: 'Modern venue for events, seminars, and performances',
-      alt: 'Auditorium',
+      image: 'Carpentry_latest.jpg',
+      title: 'Carpentry & Woodwork Lab',
+      subtitle: 'Hands-on training with industrial-grade woodworking equipment',
+      alt: 'Carpentry Workshop',
     },
     {
       image: 'library.jpg',
@@ -74,6 +104,36 @@ export class AboutUsComponent implements OnDestroy {
       subtitle: 'Olympic-standard facilities for training and recreation',
       alt: 'Sports Complex',
     },
+    {
+      image: 'Plumbing_latest.jpg',
+      title: 'Plumbing & Pipefitting Workshop',
+      subtitle: 'Practical skills in water systems and pipe installation',
+      alt: 'Plumbing Lab',
+    },
+    {
+      image: 'automotive_latest.jpg',
+      title: 'Automotive Mechanics Workshop',
+      subtitle: 'Real vehicle diagnostics and repair training',
+      alt: 'Automotive Workshop',
+    },
+    {
+      image: 'barbering_latest.jpg',
+      title: 'Barbering & Cosmetology Studio',
+      subtitle: 'Professional grooming skills in a fully equipped salon',
+      alt: 'Barbering Studio',
+    },
+    {
+      image: 'beauty.jpg',
+      title: 'Beauty Therapy Lab',
+      subtitle: 'Nail care, skin treatment and beauty therapy practice',
+      alt: 'Beauty Therapy Lab',
+    },
+    {
+      image: 'pneumatics_latest.jpg',
+      title: 'Pneumatics & Fluid Power Lab',
+      subtitle: 'Industrial equipment training for engineering students',
+      alt: 'Pneumatics Lab',
+    },
   ];
 
   currentSlide = 0;
@@ -86,7 +146,7 @@ export class AboutUsComponent implements OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.startSlideTimer();
     }
-  } 
+  }
 
   // Milestones
   milestones = [

@@ -29,6 +29,7 @@ export const routes: Routes = [
     { path: 'school-of-engineering', component: SchoolOfEngineeringComponent },
     { path: 'school-of-business', component: SchoolOfBusinessComponent },
     { path: 'gallery', component: GalleryComponent },
+    { path: '**', redirectTo: '' },  // ← add this
 
 
 

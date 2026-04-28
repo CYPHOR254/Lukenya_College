@@ -46,9 +46,10 @@
       <div class="w-full md:w-1/2 py-16 flex flex-col gap-6">
 
         <!-- Badge -->
+        <!-- Badge -->
         <div class="inline-flex">
           <span class="border border-[#4a7c2f] text-[#4a7c2f] text-xs font-medium px-4 py-1.5 rounded-full">
-            Admissions Open for 2025
+            Admissions Open for {{ currentYear }}
           </span>
         </div>
 
@@ -68,7 +69,7 @@
 
         <!-- Subtext -->
         <p class="text-gray-500 text-base leading-relaxed max-w-md">
-          Empowering students through world-class programs, modern facilities,
+          Empowering students through world-class programmes, modern facilities,
           and a community built for innovation and growth.
         </p>
 
@@ -279,93 +280,17 @@
 </section>
 
 
+<section class="relative w-full overflow-hidden">
 
-<section class="relative w-full h-[420px] bg-[#F5C518] overflow-visible">
-
-  <!-- Students Image -->
-  <div class="absolute inset-0">
-    <img src="/smiling_students.png" alt="Students" class="w-full h-full object-cover object-left" />
+  <!-- Students Image - let it define the height naturally -->
+  <div class="w-full">
+    <img src="/college_banner.jpeg" alt="Students" class="w-full h-auto block" />
   </div>
 
-  <!-- Logo Centered -->
-
-
-  <!-- Countdown Card -->
-  <div class="absolute right-16 -bottom-14">
-
-    <div class="bg-[#1f7a3a]
-                w-[480px]
-                rounded-2xl
-                px-10 py-8
-                shadow-[0_30px_70px_rgba(0,0,0,0.25)]
-                flex flex-col gap-6">
-
-      <!-- Numbers -->
-      <div class="grid grid-cols-4 text-center">
-        <div>
-          <div class="text-white text-4xl font-extrabold">{{ days }}</div>
-          <div class="text-white/70 text-xs mt-1">Days</div>
-        </div>
-        <div>
-          <div class="text-white text-4xl font-extrabold">{{ hours }}</div>
-          <div class="text-white/70 text-xs mt-1">Hour</div>
-        </div>
-        <div>
-          <div class="text-white text-4xl font-extrabold">{{ minutes }}</div>
-          <div class="text-white/70 text-xs mt-1">Minute</div>
-        </div>
-        <div>
-          <div class="text-white text-4xl font-extrabold">{{ seconds }}</div>
-          <div class="text-white/70 text-xs mt-1">Seconds</div>
-        </div>
-      </div>
-
-      <!-- Divider -->
-      <div class="border-t border-white/20"></div>
-
-      <!-- Bottom Row -->
-      <div class="flex items-center justify-between">
-
-        <div>
-          <div class="text-white font-semibold text-sm">
-            {{ eventDateDisplay }}
-          </div>
-          <div class="text-white/60 text-xs mt-1">
-            {{ eventDayTime }}
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-
-          <button class="w-10 h-10 rounded-full
-                         border border-white/30
-                         flex items-center justify-center
-                         hover:bg-white/10 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
-
-          <a href="#" class="px-6 py-2
-                    bg-yellow-400
-                    text-green-900
-                    text-xs font-bold
-                    rounded-full
-                    uppercase tracking-wide
-                    hover:bg-yellow-300
-                    transition">
-            REGISTER
-          </a>
-
-        </div>
-      </div>
-
-    </div>
-
-  </div>
 </section>
+
+
+
 
 
 <!-- Academic Programs Section -->
@@ -805,7 +730,7 @@
   <div *ngIf="submitted" class="flex flex-col items-center justify-center py-16 px-8 text-center">
     <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
       <svg class="w-8 h-8 text-[#01884E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
       </svg>
     </div>
     <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Application Submitted!</h2>
@@ -830,15 +755,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
         <div class="flex flex-col gap-1.5">
           <label class="text-sm font-semibold text-gray-700">Full Name</label>
-          <input [(ngModel)]="form.fullName" name="fullName" type="text" placeholder="Enter your name"
-            class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
+          <input [(ngModel)]="form.fullName" name="fullName" type="text" placeholder="Enter your name" class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
                    placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#2e7d32]/30
                    focus:border-[#2e7d32] transition-all duration-200" />
         </div>
         <div class="flex flex-col gap-1.5">
           <label class="text-sm font-semibold text-gray-700">Email</label>
-          <input [(ngModel)]="form.email" name="email" type="email" placeholder="Enter your email"
-            class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
+          <input [(ngModel)]="form.email" name="email" type="email" placeholder="Enter your email" class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
                    placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#2e7d32]/30
                    focus:border-[#2e7d32] transition-all duration-200" />
         </div>
@@ -848,24 +771,21 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
         <div class="flex flex-col gap-1.5">
           <label class="text-sm font-semibold text-gray-700">Phone Number</label>
-          <input [(ngModel)]="form.phone" name="phone" type="tel" placeholder="Enter your phone number"
-            class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
+          <input [(ngModel)]="form.phone" name="phone" type="tel" placeholder="Enter your phone number" class="border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-700
                    placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#2e7d32]/30
                    focus:border-[#2e7d32] transition-all duration-200" />
         </div>
         <div class="flex flex-col gap-1.5">
           <label class="text-gray-800 text-sm font-semibold">Program Interest</label>
           <div class="relative">
-            <select [(ngModel)]="form.program" name="program"
-              class="w-full appearance-none border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800
+            <select [(ngModel)]="form.program" name="program" class="w-full appearance-none border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800
                      focus:outline-none focus:ring-2 focus:ring-[#4a7c2f]/40 focus:border-[#4a7c2f] transition-all
                      bg-white cursor-pointer">
               <option value="" disabled selected>Select a program</option>
               <option *ngFor="let p of programs" [value]="p">{{ p }}</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
@@ -878,8 +798,7 @@
         <label class="text-sm font-semibold text-gray-700">Mode of study</label>
         <div class="relative">
           <!-- ↓ [(ngModel)] bound to form.mode -->
-          <select [(ngModel)]="form.mode" name="mode"
-            class="w-full appearance-none border border-gray-200 rounded-full px-4 py-2.5
+          <select [(ngModel)]="form.mode" name="mode" class="w-full appearance-none border border-gray-200 rounded-full px-4 py-2.5
                    text-sm text-gray-800 bg-white outline-none focus:ring-2
                    focus:ring-[#2e7d32]/30 focus:border-[#2e7d32] transition-all duration-200">
             <option value="" disabled selected>Select a mode of study</option>
@@ -887,8 +806,8 @@
             <option>Part-time</option>
             <option>Online</option>
           </select>
-          <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
@@ -898,29 +817,26 @@
       <div class="flex flex-col gap-1.5 mb-7">
         <label class="text-sm font-semibold text-gray-700">Message</label>
         <textarea [(ngModel)]="form.message" name="message" rows="4"
-          placeholder="Tell us about yourself and your goals..."
-          class="border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700
+          placeholder="Tell us about yourself and your goals..." class="border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700
                  placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#2e7d32]/30
                  focus:border-[#2e7d32] transition-all duration-200 resize-none"></textarea>
       </div>
 
       <!-- Error message -->
       <div *ngIf="errorMessage"
-           class="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm text-center">
+        class="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm text-center">
         {{ errorMessage }}
       </div>
 
       <!-- Submit button -->
-      <button (click)="onSubmit()"
-        [disabled]="loading"
-        class="w-full py-4 bg-[#01884E] text-white font-bold rounded-full text-sm
+      <button (click)="onSubmit()" [disabled]="loading" class="w-full py-4 bg-[#01884E] text-white font-bold rounded-full text-sm
                hover:bg-[#3a6020] active:scale-[0.98] transition-all duration-200 shadow-md hover:shadow-lg
                flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
 
         <!-- Spinner -->
         <svg *ngIf="loading" class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
         </svg>
 
         {{ loading ? 'Submitting...' : 'Apply for Program' }}
