@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CmsCacheService } from '../services/cms-cache.service';
+import { catchError, of } from 'rxjs';
 
 interface NewsArticle {
   image: string;
@@ -34,19 +36,10 @@ export interface SocialPost {
   templateUrl: './updates.component.html',
   styleUrl: './updates.component.scss'
 })
-export class UpdatesComponent {
+export class UpdatesComponent implements OnInit {
 
-  // ─── CONFIG ──────────────────────────────────────────────────────────────
-  // Replace these with your actual values from Meta Developer Console:
-  // 1. Go to https://developers.facebook.com/
-  // 2. Create an App → Add "Facebook Login" product
-  // 3. Generate a Page Access Token for your Page
-  // 4. Replace PAGE_ID and PAGE_ACCESS_TOKEN below
-  private PAGE_ID = 'YOUR_PAGE_ID';           // e.g. '123456789012345'
+  private PAGE_ID = 'YOUR_PAGE_ID';
   private ACCESS_TOKEN = 'YOUR_PAGE_ACCESS_TOKEN';
-  // ─────────────────────────────────────────────────────────────────────────
-
-
 
   featuredPost: SocialPost | null = null;
   sidePosts: SocialPost[] = [];
@@ -56,12 +49,9 @@ export class UpdatesComponent {
 
   searchQuery = '';
 
-
-    // Fallback static data matching the screenshot
   private fallbackFeatured: SocialPost = {
     id: '1',
-
-    message: `Yesterday the College was buzzing with excitement during a colourful and successful event of Commissioning of Solar power to Lukenya College by #SolarPowerGroup ! 😊 🌿 ... See more`,
+    message: `Yesterday the College was buzzing with excitement during a colourful and successful event of Commissioning of Solar power to Lukenya College by #SolarPowerGroup ! ... See more`,
     full_picture: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&auto=format&fit=crop',
     created_time: '2025-03-20T07:48:00+0000',
     permalink_url: 'https://facebook.com',
@@ -90,21 +80,43 @@ export class UpdatesComponent {
       permalink_url: 'https://facebook.com',
     },
   ];
- 
-  constructor(private http: HttpClient) {}
- 
+
+  constructor(
+    private http: HttpClient,
+    private cmsCache: CmsCacheService,
+  ) {}
+
   ngOnInit() {
     if (this.PAGE_ID === 'YOUR_PAGE_ID') {
       this.loadFallback();
-      return;
+    } else {
+      this.fetchFacebookPosts();
     }
-    this.fetchFacebookPosts();
+
+    // Load news articles from CMS
+    this.cmsCache.getNewsArticles().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsNews => {
+      if (cmsNews && cmsNews.length > 0) {
+        const mapped = cmsNews.map(article => ({
+          image: article.image ? this.cmsCache.imageUrl(article.image).width(600).auto('format').url() : 'assets/images/news/default.jpg',
+          category: article.category || 'News',
+          author: article.author || 'Admin',
+          date: article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+          title: article.title,
+          excerpt: article.excerpt || '',
+          url: article.url || '#',
+        }));
+        this.latestNews = mapped.slice(0, 2);
+        this.allNews = mapped;
+      }
+    });
   }
- 
+
   fetchFacebookPosts() {
     const fields = 'id,message,full_picture,created_time,permalink_url,attachments';
     const url = `https://graph.facebook.com/v19.0/${this.PAGE_ID}/posts?fields=${fields}&limit=4&access_token=${this.ACCESS_TOKEN}`;
- 
+
     this.http.get<{ data: SocialPost[] }>(url).subscribe({
       next: (res) => {
         const posts = res.data || [];
@@ -117,32 +129,32 @@ export class UpdatesComponent {
       },
     });
   }
- 
+
   loadFallback() {
     this.usingFallback = true;
     this.featuredPost = this.fallbackFeatured;
     this.sidePosts = this.fallbackSide;
     this.loading = false;
   }
- 
+
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) +
       ' at ' +
       date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
- 
+
   truncate(text: string, limit: number): string {
     if (!text) return '';
     return text.length > limit ? text.substring(0, limit) + '...' : text;
   }
- 
+
   getPostTitle(post: SocialPost): string {
     if (!post.message) return 'Lukenya College';
     const firstLine = post.message.split('\n')[0];
     return this.truncate(firstLine, 60);
   }
- 
+
   getPostExcerpt(post: SocialPost): string {
     if (!post.message) return '';
     const lines = post.message.split('\n').filter(l => l.trim());
@@ -150,11 +162,9 @@ export class UpdatesComponent {
     return this.truncate(body || lines[0], 100);
   }
 
-
   onSearch() {
     console.log('Searching:', this.searchQuery);
   }
-
 
   latestNews: NewsArticle[] = [
     {

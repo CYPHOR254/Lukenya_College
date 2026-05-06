@@ -1,0 +1,20 @@
+{
+  "name": "lukenya-college-cms",
+  "private": true,
+  "version": "1.0.0",
+  "main": "package.json",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "sanity": "^3",
+    "@sanity/vision": "^3"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

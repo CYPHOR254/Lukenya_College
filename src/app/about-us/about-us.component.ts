@@ -1,10 +1,11 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
+import { CmsCacheService } from '../services/cms-cache.service';
+import { catchError, of } from 'rxjs';
 
 interface Slide {
   image: string;
@@ -16,11 +17,11 @@ interface Slide {
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalComponent, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss'
 })
-export class AboutUsComponent implements OnDestroy {
+export class AboutUsComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isModalOpen = false;
   submitted = false;
@@ -35,11 +36,11 @@ export class AboutUsComponent implements OnDestroy {
     email: '',
     phone: '',
     program: '',
-    mode: '',  // ← Added missing mode field
+    mode: '',
     message: ''
   };
 
-  programs = [
+  programs: string[] = [
     'Department of Education',
     'Business Department',
     'Technical Department',
@@ -48,92 +49,18 @@ export class AboutUsComponent implements OnDestroy {
     'Other',
   ];
 
-  // Facilities Slideshow
-  // readonly slides: Slide[] = [
-  //   {
-  //     image: 'Facilities Image.jpg',
-  //     title: 'Auditorium',
-  //     subtitle: 'Modern venue for events, seminars, and performances',
-  //     alt: 'Auditorium',
-  //   },
-  //   {
-  //     image: 'library.jpg',
-  //     title: 'Library & Research Center',
-  //     subtitle: 'Thousands of resources at your fingertips',
-  //     alt: 'Library',
-  //   },
-  //   {
-  //     image: 'chefs.jpg',
-  //     title: 'Science Laboratories',
-  //     subtitle: 'Cutting-edge equipment for hands-on experiments',
-  //     alt: 'Laboratory',
-  //   },
-  //   {
-  //     image: 'sports.png',
-  //     title: 'Sports & Fitness Complex',
-  //     subtitle: 'Olympic-standard facilities for training and recreation',
-  //     alt: 'Sports Complex',
-  //   },
-  // ];
-
-
   currentYear = new Date().getFullYear();
 
-  readonly slides: Slide[] = [
-    {
-      image: 'Carpentry_latest.jpg',
-      title: 'Carpentry & Woodwork Lab',
-      subtitle: 'Hands-on training with industrial-grade woodworking equipment',
-      alt: 'Carpentry Workshop',
-    },
-    {
-      image: 'library.jpg',
-      title: 'Library & Research Center',
-      subtitle: 'Thousands of resources at your fingertips',
-      alt: 'Library',
-    },
-    {
-      image: 'chefs.jpg',
-      title: 'Science Laboratories',
-      subtitle: 'Cutting-edge equipment for hands-on experiments',
-      alt: 'Laboratory',
-    },
-    {
-      image: 'sports.png',
-      title: 'Sports & Fitness Complex',
-      subtitle: 'Olympic-standard facilities for training and recreation',
-      alt: 'Sports Complex',
-    },
-    {
-      image: 'Plumbing_latest.jpg',
-      title: 'Plumbing & Pipefitting Workshop',
-      subtitle: 'Practical skills in water systems and pipe installation',
-      alt: 'Plumbing Lab',
-    },
-    {
-      image: 'automotive_latest.jpg',
-      title: 'Automotive Mechanics Workshop',
-      subtitle: 'Real vehicle diagnostics and repair training',
-      alt: 'Automotive Workshop',
-    },
-    {
-      image: 'barbering_latest.jpg',
-      title: 'Barbering & Cosmetology Studio',
-      subtitle: 'Professional grooming skills in a fully equipped salon',
-      alt: 'Barbering Studio',
-    },
-    {
-      image: 'beauty.jpg',
-      title: 'Beauty Therapy Lab',
-      subtitle: 'Nail care, skin treatment and beauty therapy practice',
-      alt: 'Beauty Therapy Lab',
-    },
-    {
-      image: 'tank.jpg',
-      title: 'Pneumatics & Fluid Power Lab',
-      subtitle: 'Industrial equipment training for engineering students',
-      alt: 'tank Lab',
-    },
+  slides: Slide[] = [
+    { image: 'Carpentry_latest.jpg', title: 'Carpentry & Woodwork Lab', subtitle: 'Hands-on training with industrial-grade woodworking equipment', alt: 'Carpentry Workshop' },
+    { image: 'library.jpg', title: 'Library & Research Center', subtitle: 'Thousands of resources at your fingertips', alt: 'Library' },
+    { image: 'chefs.jpg', title: 'Science Laboratories', subtitle: 'Cutting-edge equipment for hands-on experiments', alt: 'Laboratory' },
+    { image: 'sports.png', title: 'Sports & Fitness Complex', subtitle: 'Olympic-standard facilities for training and recreation', alt: 'Sports Complex' },
+    { image: 'Plumbing_latest.jpg', title: 'Plumbing & Pipefitting Workshop', subtitle: 'Practical skills in water systems and pipe installation', alt: 'Plumbing Lab' },
+    { image: 'automotive_latest.jpg', title: 'Automotive Mechanics Workshop', subtitle: 'Real vehicle diagnostics and repair training', alt: 'Automotive Workshop' },
+    { image: 'barbering_latest.jpg', title: 'Barbering & Cosmetology Studio', subtitle: 'Professional grooming skills in a fully equipped salon', alt: 'Barbering Studio' },
+    { image: 'beauty.jpg', title: 'Beauty Therapy Lab', subtitle: 'Nail care, skin treatment and beauty therapy practice', alt: 'Beauty Therapy Lab' },
+    { image: 'tank.jpg', title: 'Pneumatics & Fluid Power Lab', subtitle: 'Industrial equipment training for engineering students', alt: 'tank Lab' },
   ];
 
   currentSlide = 0;
@@ -141,12 +68,9 @@ export class AboutUsComponent implements OnDestroy {
 
   constructor(
     private api: ApiService,
+    private cmsCache: CmsCacheService,
     @Inject(PLATFORM_ID) private platformId: object
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.startSlideTimer();
-    }
-  }
+  ) {}
 
   // Milestones
   milestones = [
@@ -161,7 +85,7 @@ export class AboutUsComponent implements OnDestroy {
   dotCols = [6, 22, 38, 54, 70, 86, 102, 118];
 
   // Cards
-  cards = [
+  cards: any[] = [
     {
       title: 'Vision',
       description: 'To be a dynamic college, committed to scholarship in teaching, research, training and community service.',
@@ -182,7 +106,7 @@ export class AboutUsComponent implements OnDestroy {
   currentIndex = 2;
 
   // Amenities carousel
-  amenities = [
+  amenities: any[] = [
     { title: 'Lecture Hall', description: 'Lukenya College has spacious lecture halls equipped with modern audio-visual technology for effective learning.', image: 'assets/images/amenities/lecture-hall.jpg' },
     { title: 'Library', description: 'A well-stocked library with thousands of academic resources to support research and learning.', image: 'assets/images/amenities/library.jpg' },
     { title: 'Gym', description: 'Lukenya College has a Gym facility that guarantees students wellness and fitness outside the classroom.', image: 'assets/images/amenities/gym.jpg' },
@@ -192,13 +116,82 @@ export class AboutUsComponent implements OnDestroy {
 
   private timer: ReturnType<typeof setInterval> | null = null;
 
+  ngOnInit(): void {
+    this.loadCmsContent();
+    if (isPlatformBrowser(this.platformId)) {
+      this.startSlideTimer();
+    }
+  }
+
+  private loadCmsContent(): void {
+    // Load slides from CMS
+    this.cmsCache.getSlides().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsSlides => {
+      if (cmsSlides && cmsSlides.length > 0) {
+        this.slides = cmsSlides.map(s => ({
+          image: s.image ? this.cmsCache.imageUrl(s.image).width(1200).auto('format').url() : '',
+          title: s.title,
+          subtitle: s.subtitle,
+          alt: s.alt || s.title,
+        }));
+      }
+    });
+
+    // Load milestones from CMS
+    this.cmsCache.getMilestones().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsMilestones => {
+      if (cmsMilestones && cmsMilestones.length > 0) {
+        this.milestones = cmsMilestones.map(m => ({
+          label: m.label,
+          year: m.year,
+          superscript: m.superscript,
+          icon: m.icon,
+        }));
+      }
+    });
+
+    // Load value cards from CMS
+    this.cmsCache.getValueCards().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsCards => {
+      if (cmsCards && cmsCards.length > 0) {
+        this.cards = cmsCards.map(c => ({
+          title: c.title,
+          description: c.description,
+          iconPath: c.iconSvgPath,
+        }));
+      }
+    });
+
+    // Load amenities from CMS
+    this.cmsCache.getAmenities().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsAmenities => {
+      if (cmsAmenities && cmsAmenities.length > 0) {
+        this.amenities = cmsAmenities.map(a => ({
+          title: a.title,
+          description: a.description,
+          image: a.image ? this.cmsCache.imageUrl(a.image).width(600).auto('format').url() : 'assets/images/amenities/default.jpg',
+        }));
+      }
+    });
+
+    // Load program options from CMS
+    this.cmsCache.getProgramOptions().pipe(
+      catchError(() => of(null))
+    ).subscribe(options => {
+      if (options && options.length > 0) {
+        this.programs = options.map(o => o.name);
+      }
+    });
+  }
+
   ngOnDestroy() {
     if (this.timer) clearInterval(this.timer);
     if (this.slideTimer) clearInterval(this.slideTimer);
   }
-
-
-  private apiUrl = 'http://localhost:5000/send-application';
 
   onSubmit() {
     const { fullName, email, phone, program, mode, message } = this.form;
