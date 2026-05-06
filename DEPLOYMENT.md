@@ -143,9 +143,11 @@ git push origin v1.1.1
 
 - **Server:** Ubuntu VPS at the IP configured in `SSH_HOST`
 - **App directory:** `/home/lukenya/lukenya_college_ui`
+- **CMS Studio directory:** `/home/lukenya/lukenya_college_ui/cms-studio`
 - **Process manager:** PM2, app name `lukenya-college`
 - **Port:** 4000 (behind nginx reverse proxy)
 - **Domain:** lukenyacollege.ac.ke (HTTPS via Let's Encrypt)
+- **CMS Domain:** cms.lukenyacollege.ac.ke (Sanity Studio)
 
 ### Useful PM2 Commands (on server)
 
@@ -155,3 +157,69 @@ pm2 restart lukenya-college # Restart the app
 pm2 logs lukenya-college    # View app logs
 pm2 monit                   # Real-time monitoring
 ```
+
+---
+
+## Sanity Studio Setup (cms.lukenyacollege.ac.ke)
+
+The deploy workflow builds Sanity Studio as static files and rsyncs them to `/home/lukenya/lukenya_college_ui/cms-studio/` on the VPS. You need to configure nginx to serve them.
+
+### 1. Add DNS Record
+
+Add an **A record** for `cms.lukenyacollege.ac.ke` pointing to your server IP (`197.136.12.44`) in your domain registrar's DNS settings.
+
+### 2. Create nginx config
+
+SSH into the server and create the nginx config:
+
+```bash
+sudo nano /etc/nginx/sites-available/cms.lukenyacollege.ac.ke
+```
+
+Paste this config:
+
+```nginx
+server {
+    listen 80;
+    server_name cms.lukenyacollege.ac.ke;
+
+    root /home/lukenya/lukenya_college_ui/cms-studio;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}
+```
+
+### 3. Enable the site and get SSL
+
+```bash
+# Enable the site
+sudo ln -s /etc/nginx/sites-available/cms.lukenyacollege.ac.ke /etc/nginx/sites-enabled/
+
+# Test nginx config
+sudo nginx -t
+
+# Reload nginx
+sudo systemctl reload nginx
+
+# Get SSL certificate (after DNS propagation)
+sudo certbot --nginx -d cms.lukenyacollege.ac.ke
+```
+
+### 4. Add CORS origin in Sanity
+
+The Studio makes API calls to Sanity from the browser. Add the production URL:
+
+```bash
+sanity cors add https://cms.lukenyacollege.ac.ke -p 3r5d1eeb --no-credentials
+```
+
+After this, staff can access the CMS at `https://cms.lukenyacollege.ac.ke` to manage all website content.
