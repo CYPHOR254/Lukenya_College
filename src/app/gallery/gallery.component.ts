@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmsCacheService } from '../services/cms-cache.service';
-import { GalleryImage } from '../models/cms.models';
 import { catchError, of } from 'rxjs';
 
 @Component({

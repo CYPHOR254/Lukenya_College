@@ -8,12 +8,12 @@ export class MockCmsCacheService {
   getAmenities() { return of([]); }
   getAcademicPrograms() { return of([]); }
   getFaqTopics() { return of([]); }
-  getStaffMember(_role: string) { return of(null); }
-  getSchoolPage(_slug: string) { return of(null); }
-  getGalleryImages(_category?: string) { return of([]); }
-  getNewsArticles(_limit?: number) { return of([]); }
+  getStaffMember() { return of(null); }
+  getSchoolPage() { return of(null); }
+  getGalleryImages() { return of([]); }
+  getNewsArticles() { return of([]); }
   getProgramOptions() { return of([]); }
-  imageUrl(_source: any) {
+  imageUrl() {
     return { width: () => ({ auto: () => ({ url: () => 'mock-image-url' }) }) };
   }
 }
