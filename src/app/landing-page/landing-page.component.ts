@@ -5,7 +5,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ModalComponent } from '../modal/modal.component';
 import { ApiService } from '../services/api.service';
 import { CmsCacheService } from '../services/cms-cache.service';
-import { FacilitySlide, FaqItem, SiteSettings } from '../models/cms.models';
 import { catchError, of } from 'rxjs';
 
 interface Slide {

@@ -106,7 +106,7 @@ export interface NavLink {
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   isMenuOpen = false;
   isModalOpen = false;
@@ -151,8 +151,6 @@ export class HeaderComponent implements OnInit {
       ],
     },
   ];
-
-  ngOnInit(): void { }
 
   /** Toggle desktop dropdown by label */
   toggleDropdown(label: string): void {
