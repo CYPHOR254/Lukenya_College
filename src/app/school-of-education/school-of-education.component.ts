@@ -1,10 +1,10 @@
-
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-// import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ModalComponent } from '../modal/modal.component';
-import { ApiService } from '../services/api.service'; // adjust path
+import { ApiService } from '../services/api.service';
+import { CmsCacheService } from '../services/cms-cache.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-school-of-education',
@@ -13,16 +13,14 @@ import { ApiService } from '../services/api.service'; // adjust path
   templateUrl: './school-of-education.component.html',
   styleUrl: './school-of-education.component.scss'
 })
-export class SchoolOfEducationComponent implements OnDestroy {
+export class SchoolOfEducationComponent implements OnInit, OnDestroy {
 
-  // ── Modal & Slideshow ─────────────────────────────────────────────────────
   isModalOpen = false;
   currentIndex = 2;
   amenities: any[] = [];
 
   private timer: ReturnType<typeof setInterval> | null = null;
 
-  // ── Application Form ──────────────────────────────────────────────────────
   form = {
     fullName: '',
     email: '',
@@ -32,7 +30,7 @@ export class SchoolOfEducationComponent implements OnDestroy {
     message: '',
   };
 
-  programs = [
+  programs: string[] = [
     'Department of Education',
     'Business Department',
     'Technical Department',
@@ -45,11 +43,9 @@ export class SchoolOfEducationComponent implements OnDestroy {
   loading = false;
   errorMessage = '';
 
-  private apiUrl = 'http://localhost:5000/send-application';
-
-  // ── Constructor ───────────────────────────────────────────────────────────
   constructor(
     private api: ApiService,
+    private cmsCache: CmsCacheService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     if (isPlatformBrowser(this.platformId)) {
@@ -57,12 +53,21 @@ export class SchoolOfEducationComponent implements OnDestroy {
     }
   }
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  ngOnInit(): void {
+    // Load program options from CMS
+    this.cmsCache.getProgramOptions().pipe(
+      catchError(() => of(null))
+    ).subscribe(options => {
+      if (options && options.length > 0) {
+        this.programs = options.map(o => o.name);
+      }
+    });
+  }
+
   ngOnDestroy() {
     if (this.timer) clearInterval(this.timer);
   }
 
-  // ── Slideshow helpers ─────────────────────────────────────────────────────
   next() {
     if (!this.amenities.length) return;
     this.currentIndex = (this.currentIndex + 1) % this.amenities.length;
@@ -80,7 +85,6 @@ export class SchoolOfEducationComponent implements OnDestroy {
     this.timer = setInterval(() => this.next(), 5000);
   }
 
-  // ── Form submission ───────────────────────────────────────────────────────
   onSubmit(): void {
     const { fullName, email, phone, program, mode, message } = this.form;
 

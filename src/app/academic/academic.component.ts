@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CmsCacheService } from '../services/cms-cache.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-academic',
   standalone: true,
-  imports: [CommonModule ,FormsModule ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './academic.component.html',
   styleUrl: './academic.component.scss'
 })
-export class AcademicComponent {
-  
+export class AcademicComponent implements OnInit {
+
   // ── Contact form ──────────────────────────
   form = {
     fullName: '',
@@ -20,7 +22,7 @@ export class AcademicComponent {
     message: '',
   };
 
-  programs = [
+  programs: string[] = [
     'Department of Education',
     'Business Department',
     'Technical Department',
@@ -36,7 +38,7 @@ export class AcademicComponent {
     console.log('Form submitted:', this.form);
   }
 
-  categories = [
+  categories: any[] = [
     {
       name: 'KNEC Courses',
       description: 'Kenya National Examinations Council (KNEC) is the national body responsible for overseeing national examinations in the country. It was established to conduct school, post school and other examinations and has the role of ensuring validity and reliability of examinations; ensuring conformity to Kenya\'s goals and changes in government policies relating to the curriculum and examinations. The tertiary exams by KNEC are conducted in the months of March, July and November every year.',
@@ -54,11 +56,10 @@ export class AcademicComponent {
         { title: 'Diploma in Business Management', description: 'A groundbreaking facility dedicated to advancing artificial intelligence research and innovation.', image: './bussiness-man.jpg' },
         { title: 'Diploma in Information Communication Technology', description: 'A groundbreaking facility dedicated to advancing artificial intelligence research and innovation.', image: './similing-technician.jpg' },
       ],
-
-      },
+    },
     {
       name: 'Short Courses',
-      intro: 'Kenya Accountants and Secretaries National Examinations Board (KASNEB) is the body responsible for preparing and administering exams for diploma and professional certificate courses. In addition to these roles, it is the professional body mandated to create the syllabus and offer certifications to students pursuing various courses. The main categories of courses KASNEB is mandated with include Management, Finance, Secretarial Studies, Information Technology, Credit, Governance, Accountancy and other related disciplines. KASNEB exams are normally conducted in the months of May and November every year.',
+      intro: 'Kenya Accountants and Secretaries National Examinations Board (KASNEB) is the body responsible for preparing and administering exams for diploma and professional certificate courses.',
       courses: [
         { title: 'Hair and beauty therapy', description: 'A groundbreaking facility dedicated to advancing artificial intelligence research and innovation.', image: './beauty.jpg' },
         { title: 'Electrical Installation', description: 'A groundbreaking facility dedicated to advancing artificial intelligence research and innovation.', image: './cable_man.jpg' },
@@ -66,4 +67,34 @@ export class AcademicComponent {
       ],
     },
   ];
+
+  constructor(private cmsCache: CmsCacheService) {}
+
+  ngOnInit(): void {
+    // Load academic programs from CMS
+    this.cmsCache.getAcademicPrograms().pipe(
+      catchError(() => of(null))
+    ).subscribe(cmsCategories => {
+      if (cmsCategories && cmsCategories.length > 0) {
+        this.categories = cmsCategories.map(cat => ({
+          name: cat.name,
+          description: cat.description,
+          courses: (cat.courses || []).map(course => ({
+            title: course.title,
+            description: course.description,
+            image: course.image ? this.cmsCache.imageUrl(course.image).width(400).auto('format').url() : './cheerful-woman.jpg',
+          })),
+        }));
+      }
+    });
+
+    // Load program options from CMS
+    this.cmsCache.getProgramOptions().pipe(
+      catchError(() => of(null))
+    ).subscribe(options => {
+      if (options && options.length > 0) {
+        this.programs = options.map(o => o.name);
+      }
+    });
+  }
 }

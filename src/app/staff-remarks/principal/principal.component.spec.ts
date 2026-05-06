@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PrincipalComponent } from './principal.component';
+import { CmsCacheService } from '../../services/cms-cache.service';
+import { MockCmsCacheService } from '../../services/cms-cache.service.mock';
 
 describe('PrincipalComponent', () => {
   let component: PrincipalComponent;
@@ -8,9 +9,11 @@ describe('PrincipalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PrincipalComponent]
-    })
-    .compileComponents();
+      imports: [PrincipalComponent],
+      providers: [
+        { provide: CmsCacheService, useClass: MockCmsCacheService },
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PrincipalComponent);
     component = fixture.componentInstance;
@@ -19,5 +22,9 @@ describe('PrincipalComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have fallback principal data', () => {
+    expect(component.principal.name).toBe('Mr Joel Mulelu');
   });
 });

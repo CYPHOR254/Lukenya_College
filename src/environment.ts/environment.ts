@@ -6,6 +6,15 @@
 
 // environment.prod.ts
 export const environment = {
-  production: true,
-  apiUrl: 'https://lukenya-college-backed.onrender.com'
+  production: false,
+  apiUrl: 'https://lukenya-college-backed.onrender.com',
+
+  // Sanity CMS configuration
+  // TODO: Replace 'YOUR_PROJECT_ID' with your actual Sanity project ID
+  // after running `cd cms && npx sanity init`
+  sanity: {
+    projectId: '3r5d1eeb',
+    dataset: 'production',
+    apiVersion: '2024-01-01',
+  },
 };

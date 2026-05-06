@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { HttpClient } from '@angular/common/http';
 import { ModalComponent } from '../modal/modal.component';
-import { ApiService } from '../services/api.service'; // adjust path
+import { ApiService } from '../services/api.service';
+import { CmsCacheService } from '../services/cms-cache.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-school-of-engineering',
@@ -12,7 +13,7 @@ import { ApiService } from '../services/api.service'; // adjust path
   templateUrl: './school-of-engineering.component.html',
   styleUrl: './school-of-engineering.component.scss'
 })
-export class SchoolOfEngineeringComponent {
+export class SchoolOfEngineeringComponent implements OnInit {
   isModalOpen = false;
 
   form = {
@@ -24,7 +25,7 @@ export class SchoolOfEngineeringComponent {
     message: '',
   };
 
-  programs = [
+  programs: string[] = [
     'Department of Education',
     'Business Department',
     'Technical Department',
@@ -37,7 +38,33 @@ export class SchoolOfEngineeringComponent {
   loading = false;
   errorMessage = '';
 
-  constructor( private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private cmsCache: CmsCacheService,
+  ) {}
+
+  ngOnInit(): void {
+    // Load school page content from CMS
+    this.cmsCache.getSchoolPage('school-of-engineering').pipe(
+      catchError(() => of(null))
+    ).subscribe(page => {
+      if (page) {
+        if (page.programmes?.length) this.programmes = page.programmes;
+        if (page.assessmentItems?.length) this.assessmentItems = page.assessmentItems;
+        if (page.trainingApproach?.length) this.trainingApproach = page.trainingApproach;
+        if (page.attachmentTags?.length) this.attachmentTags = page.attachmentTags;
+      }
+    });
+
+    // Load program options from CMS
+    this.cmsCache.getProgramOptions().pipe(
+      catchError(() => of(null))
+    ).subscribe(options => {
+      if (options && options.length > 0) {
+        this.programs = options.map(o => o.name);
+      }
+    });
+  }
 
   onSubmit() {
     const { fullName, email, phone, program, mode, message } = this.form;
