@@ -17,12 +17,16 @@
 import { createClient } from '@sanity/client';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const client = createClient({
-  projectId: 'YOUR_PROJECT_ID', // TODO: Replace after `sanity init`
+  projectId: '3r5d1eeb',
   dataset: 'production',
   apiVersion: '2024-01-01',
-  token: 'YOUR_WRITE_TOKEN', // TODO: Create at manage.sanity.io > API > Tokens
+  token: process.env['SANITY_TOKEN'] || '',
   useCdn: false,
 });
 

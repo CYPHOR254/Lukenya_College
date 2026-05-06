@@ -32,7 +32,7 @@ export class CmsService {
       projectId: environment.sanity.projectId,
       dataset: environment.sanity.dataset,
       apiVersion: environment.sanity.apiVersion,
-      useCdn: true,
+      useCdn: environment.production, // false in dev for instant updates, true in prod for CDN speed
     });
     this.imageBuilder = imageUrlBuilder(this.client);
   }
@@ -162,10 +162,9 @@ export class CmsService {
   getNewsArticles(limit = 10): Observable<NewsArticle[]> {
     return from(
       this.client.fetch(
-        `*[_type == "newsArticle"] | order(publishedAt desc)[0...$limit] {
+        `*[_type == "newsArticle"] | order(publishedAt desc)[0...${limit}] {
           _id, title, slug, excerpt, image, category, author, publishedAt, url
-        }`,
-        { limit }
+        }`
       )
     );
   }

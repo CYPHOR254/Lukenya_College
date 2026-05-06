@@ -23,7 +23,7 @@ export default defineConfig({
   title: 'Lukenya College CMS',
 
   // TODO: Replace with your actual Sanity project ID and dataset after running `sanity init`
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: '3r5d1eeb',
   dataset: 'production',
 
   plugins: [

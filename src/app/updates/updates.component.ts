@@ -95,8 +95,12 @@ export class UpdatesComponent implements OnInit {
 
     // Load news articles from CMS
     this.cmsCache.getNewsArticles().pipe(
-      catchError(() => of(null))
+      catchError((err) => {
+        console.error('CMS news fetch error:', err);
+        return of(null);
+      })
     ).subscribe(cmsNews => {
+      console.log('CMS news articles:', cmsNews);
       if (cmsNews && cmsNews.length > 0) {
         const mapped = cmsNews.map(article => ({
           image: article.image ? this.cmsCache.imageUrl(article.image).width(600).auto('format').url() : 'assets/images/news/default.jpg',
